@@ -1,0 +1,12 @@
+{
+	"roles": {
+		"admin-role": "1423265303231598694",
+		"not-verified-role": "1423266229531050095",
+		"whitelisted-role": "1423265439823298600"
+	},
+	"channels": {
+		"log-channel": "1423268939185786920",
+		"verification-channel": "1423266498704707648",
+		"verification-request-channel": "1423271221314719805"
+	}
+}
