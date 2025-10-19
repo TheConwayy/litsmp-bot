@@ -2,6 +2,7 @@ import { ApplyOptions } from '@sapphire/decorators';
 import { Listener } from '@sapphire/framework';
 import type { StoreRegistryValue } from '@sapphire/pieces';
 import { blue, gray, green, magenta, magentaBright, white, yellow } from 'colorette';
+import { Client, ChannelType } from 'discord.js';
 
 const dev = process.env.NODE_ENV !== 'production';
 
@@ -9,9 +10,10 @@ const dev = process.env.NODE_ENV !== 'production';
 export class UserEvent extends Listener {
 	private readonly style = dev ? yellow : blue;
 
-	public override run() {
+	public override run(client: Client) {
 		this.printBanner();
 		this.printStoreDebugInformation();
+		this.sendMessage(client);
 	}
 
 	private printBanner() {
@@ -47,5 +49,14 @@ ${line03}${dev ? ` ${pad}${blc('<')}${llc('/')}${blc('>')} ${llc('DEVELOPMENT MO
 
 	private styleStore(store: StoreRegistryValue, last: boolean) {
 		return gray(`${last ? '└─' : '├─'} Loaded ${this.style(store.size.toString().padEnd(3, ' '))} ${store.name}.`);
+	}
+
+	private async sendMessage(client: Client) {
+		const channel = client.channels.cache.get('1429519213378273290');
+		if (!channel || dev) return;
+
+		if (channel.type === ChannelType.GuildText) {
+			channel.send('Bot is online!');
+		}
 	}
 }
