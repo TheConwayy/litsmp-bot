@@ -16,7 +16,7 @@ export function getUserEmbed(member: GuildMember): EmbedBuilder {
 		.setDescription('# User Information')
 		.setThumbnail(user.displayAvatarURL())
 		.addFields({ name: 'ID', value: `\`${user.id}\``, inline: true })
-		.addFields({ name: 'Username', value: user.username, inline: true })
+		.addFields({ name: 'User', value: `<@${user.id}>`, inline: true })
 		.addFields({ name: '\u200B', value: '\u200B', inline: true })
 		.addFields({ name: 'Account Created', value: `<t:${accountCreatedEpoch}:R>`, inline: true })
 		.addFields({ name: 'Joined At', value: `<t:${joinedAtEpoch}:R>`, inline: true })
