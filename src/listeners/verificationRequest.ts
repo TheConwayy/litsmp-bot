@@ -14,9 +14,9 @@ export class ApproveVerificationRequestListener extends Listener {
 	public async run(interaction: Interaction) {
 		if (!interaction.isButton()) return;
 
-		if (interaction.customId.startsWith('approve-')) {
+		if (interaction.customId === 'verify') {
 			// Get the user id
-			const id = interaction.customId.split('-')[1];
+			const id = interaction.user.id;
 
 			// Get the guild
 			const guild = interaction.guild;
@@ -42,24 +42,22 @@ export class ApproveVerificationRequestListener extends Listener {
 			const member = await guild.members.fetch(id);
 			if (!member) return;
 
+			// Check to see if the user is already whitelisted
+			if (member.roles.cache.has(whitelistedRole.id)) {
+				await interaction.reply({ content: "You're already whitelisted!", flags: MessageFlags.Ephemeral });
+				return;
+			}
+
 			// Remove the not-verified role and add the whitelisted role
 			await member.roles.remove(notVerifiedRole);
 			await member.roles.add(whitelistedRole);
 
 			// Create embeds
-			const logEmbed = new EmbedBuilder()
-				.setDescription(`<@${id}> (\`${id}\`) was approved by <@${interaction.user.id}> (\`${interaction.user.id}\`).`)
-				.setColor('Blurple');
-
-			const newEmbed = new EmbedBuilder()
-				.setDescription(`# Verification Request\n\nThe verification request for <@${id}> has been approved.`)
-				.setColor('Green');
+			const logEmbed = new EmbedBuilder().setDescription(`<@${id}> (\`${id}\`) verified their account.`).setColor('Blurple');
 
 			// Send embeds & DMs
 			await logChannel.send({ embeds: [logEmbed, getUserEmbed(member)] });
-			await member.user.send({ content: `✅ | Your verification request in ${interaction.guild.name} has been approved.` });
-			await interaction.reply({ content: 'Verification request approved', flags: MessageFlags.Ephemeral });
-			await interaction.message.edit({ content: '', components: [], embeds: [newEmbed, getUserEmbed(member)] });
+			await interaction.reply({ content: "You've been veriried successfully!", flags: MessageFlags.Ephemeral });
 		}
 	}
 }
